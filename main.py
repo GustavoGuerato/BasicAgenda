@@ -7,12 +7,12 @@ class AgendaDB:
         self.cursor = self.conn.cursor()
 
     def inserir(self, nome, telefone):
-        consulta = 'INSERT INTO agenda (nome,telefone) VALUES(?,?)'
+        consulta = 'INSERT OR IGNORE INTO agenda (nome,telefone) VALUES(?,?)'
         self.cursor.execute(consulta, (nome, telefone))
         self.conn.commit()
 
     def editar(self, nome, telefone, id):
-        consulta = 'UPDATE agenda set nome=?, telefone=? WHERE id=?'
+        consulta = 'UPDATE OR IGNORE agenda set nome=?, telefone=? WHERE id=?'
         self.cursor.execute(consulta, (nome, telefone, id))
         self.conn.commit()
 
@@ -27,6 +27,11 @@ class AgendaDB:
         for linha in self.cursor.fetchall():
             print(linha)
 
+
+    def buscar(self, valor):
+        consulta = 'SELECT * FROM agenda WHERE nome LIKE ?'
+        self.cursor.execute(consulta, (f'%{valor}%',))
+
     def fechar(self):
         self.cursor.close()
         self.conn.close()
@@ -34,6 +39,4 @@ class AgendaDB:
 
 if __name__ == '__main__':
     agenda = AgendaDB('agenda.db')
-    agenda.inserir('Gustavo', '123456')
-    agenda.inserir('Gustavo', '123456')
-
+    agenda.listar()
