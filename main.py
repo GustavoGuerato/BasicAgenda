@@ -4,20 +4,36 @@ import sqlite3
 class AgendaDB:
     def __init__(self, arquivo):
         self.conn = sqlite3.connect(arquivo)
-        self.cursor = sqlite3.conn.cursor()
+        self.cursor = self.conn.cursor()
 
-    def inserir(self,nome,telefone):
-        pass
+    def inserir(self, nome, telefone):
+        consulta = 'INSERT INTO agenda (nome,telefone) VALUES(?,?)'
+        self.cursor.execute(consulta, (nome, telefone))
+        self.conn.commit()
 
-    def editar(self,nome,telefone,id):
-        pass
+    def editar(self, nome, telefone, id):
+        consulta = 'UPDATE agenda set nome=?, telefone=? WHERE id=?'
+        self.cursor.execute(consulta, (nome, telefone, id))
+        self.conn.commit()
 
-    def excluir(self):
-        pass
+    def excluir(self, id):
+        consulta = 'DELETE FROM agenda WHERE id=?'
+        self.cursor.execute(consulta, (id,))
+        self.conn.commit()
 
     def listar(self):
-        pass
+        self.cursor.execute('SELECT * FROM agenda')
+
+        for linha in self.cursor.fetchall():
+            print(linha)
 
     def fechar(self):
         self.cursor.close()
         self.conn.close()
+
+
+if __name__ == '__main__':
+    agenda = AgendaDB('agenda.db')
+    agenda.inserir('Gustavo', '123456')
+    agenda.inserir('Gustavo', '123456')
+
